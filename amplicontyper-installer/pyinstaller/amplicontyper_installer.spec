@@ -1,4 +1,4 @@
--*- mode: python ; coding: utf-8 -*-
+# -*- mode: python ; coding: utf-8 -*-
 block_cipher = None
 
 a = Analysis(
@@ -10,13 +10,11 @@ a = Analysis(
     hookspath=[],
     runtime_hooks=[],
     excludedimports=[],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
     cipher=block_cipher,
     noarchive=False,
 )
 
-pyz = PYZ(a.pure, a.zst, cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
     pyz,
@@ -25,7 +23,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='amplicontyper_installer',
+    name='amplicontyper',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

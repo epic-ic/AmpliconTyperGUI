@@ -1,5 +1,6 @@
 name: amplicontyper-installer
 channels:
+  - conda-forge
   - bioconda
 dependencies:
   - python=3.11
