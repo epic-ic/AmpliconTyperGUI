@@ -1,12 +1,24 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
+import subprocess
+
 block_cipher = None
 
+# We should be running in a micromamba environment where we can find amplicontyper's classify script - this is a bash
+# entrypoint for a python module
+classify_bash = subprocess.run(
+    ['micromamba', 'run', 'which', 'classify'],
+    capture_output=True,
+    text=True
+)
+env_bin = os.path.dirname(classify_bash.stdout.strip())
+
 a = Analysis(
-    ['entrypoint.py'],
+    [os.path.join(env_bin, "classify.py")],
     pathex=[],
     binaries=[],
-    datas=[],
-    hiddenimports=[], # TODO: check that we don't need to include anplicontyper here
+    datas=[(os.path.join(env_bin, "html_head.txt"), ".")],
+    hiddenimports=["amplicontyper"],
     hookspath=[],
     runtime_hooks=[],
     excludedimports=[],
@@ -23,7 +35,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='amplicontyper',
+    name='amplicontyper_classify', # We currently only support the classify method
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

@@ -1,6 +1,6 @@
 import json
 import sys
-from amplicontyper import classify
+from amplicontyper.scripts.classify import main
 
 request = json.loads(sys.stdin.readline().strip())
 args = request.get('args', [])

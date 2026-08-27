@@ -13,10 +13,3 @@ dependencies = []
 dev = [
     "pyinstaller>=6.0",
 ]
-
-[project.scripts]
-build-python = "pyinstaller.build_installer:main"
-
-[tool.pyinstaller]
-spec-file = "pyinstaller/amplicontyper_installer.spec"
-output-dir = "build/python"
