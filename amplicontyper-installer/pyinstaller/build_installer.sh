@@ -6,7 +6,7 @@ eval "$(micromamba shell hook --shell bash)"
 micromamba create -f environment.yml -y
 micromamba activate amplicontyper-installer
 
-echo "Building binary..."
-pyinstaller "pyinstaller/amplicontyper_installer.spec"
+echo "Building executable..."
+pyinstaller "pyinstaller/amplicontyper_installer.spec" -y
 
-echo "Successfully built to: /dist"
+echo "Successfully built executable to /dist"
