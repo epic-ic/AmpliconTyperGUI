@@ -5,6 +5,7 @@ channels:
 dependencies:
   - python=3.11
   - amplicontyper>=0.1.35
+  - minimap2
   - pip
   - setuptools
   - wheel
