@@ -23,5 +23,4 @@ report was generated.
 
 There is a known issue where AmpliconTyper attempts to check its own version using conda, but we're running outside
 a conda context, so this fails and logs an error. However this check does not affect the running of the classifier.
-We'll find another
-way to do version checking later.
+We'll find another way to do version checking later.
