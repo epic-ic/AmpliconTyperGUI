@@ -9,7 +9,7 @@ defaults:
     working-directory: ./amplicontyper-installer
 
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
