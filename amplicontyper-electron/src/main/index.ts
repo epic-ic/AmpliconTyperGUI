@@ -13,8 +13,10 @@ import {
 
 // TODO: specify AmpliconTyper version. This should be the version we use when we build the PyInstaller
 const ampliconTyperGUIVersion = pkg.version;
+const ampliconTyperExePath = process.env.AMPLICON_TYPER_EXE_PATH;
+const ampliconTyperInternalBinPath = process.env.AMPLICON_TYPER_INTERNAL_BIN_PATH;
 
-const runner = new AmpliconTyperRunner();
+const runner = new AmpliconTyperRunner(ampliconTyperExePath, ampliconTyperInternalBinPath);
 
 function createWindow(): void {
     // Create the browser window.
@@ -96,15 +98,16 @@ function createWindow(): void {
             },
         });
 
-        runner
-            .runAmpliconTyper(options, writable)
-            .catch((e) => {
-                mainWindow.webContents.send(
-                    "error",
-                    "runError",
-                    (e as Error).message,
-                );
-            });
+        try {
+            await runner
+                .runAmpliconTyper(options, writable)
+        } catch(e) {
+            mainWindow.webContents.send(
+                "error",
+                "runError",
+                (e as Error).message,
+            );
+        }
     });
 }
 
