@@ -59,7 +59,7 @@ function createWindow(): void {
     /**
      * Get the current versions of AmpliconTyperGUI and (TODO) AmpliconTyper
      */
-    ipcMain.handle("-versions", (_event): AmpliconTyperVersions => {
+    ipcMain.handle("amplicontyper-versions", (_event): AmpliconTyperVersions => {
         return {
             ampliconTyperGUI: ampliconTyperGUIVersion
         };
