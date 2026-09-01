@@ -15,12 +15,23 @@ export interface AmpliconTyperSettings {
 
 export interface AmpliconTyperRunOptions {
     parameters: AmpliconTyperRunParameters,
-    settings: AmpliconTyperRunSettings
+    settings: AmpliconTyperSettings
 }
 
 export interface AppState {
     doneInitialSubmit: boolean;
     doneInitialValidate: boolean;
 }
+
+export interface FileDialogOptions {
+    title: string;
+    defaultPath: string;
+    selectFolder: boolean;
+    filters?: {
+        name: string;
+        extensions: string[];
+    }[];
+}
+
 
 

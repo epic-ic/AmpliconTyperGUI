@@ -12,10 +12,11 @@
     "allowJs": true,
     "checkJs": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "composite": true,
     "compilerOptions": {
       "paths": {
-        "$lib": ["./src/lib"],
-        "$lib/*": ["./src/lib/*"]
+        "$lib": ["./src/renderer/src/lib"],
+        "$lib/*": ["./src/renderer/src/lib/*"]
       }
     }
   }

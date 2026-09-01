@@ -4,7 +4,6 @@
     import Nav from "./components/nav/Nav.svelte";
     import Run from "./components/run/Run.svelte";
     import About from "./components/About.svelte";
-    import { ampliconTyperAPI } from "./lib/ampliconTyperAPI.svelte.js";
 </script>
 
 <Router>

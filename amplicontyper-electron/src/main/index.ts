@@ -13,8 +13,14 @@ import {
 
 // TODO: specify AmpliconTyper version. This should be the version we use when we build the PyInstaller
 const ampliconTyperGUIVersion = pkg.version;
-const ampliconTyperExePath = process.env.AMPLICON_TYPER_EXE_PATH;
-const ampliconTyperInternalBinPath = process.env.AMPLICON_TYPER_INTERNAL_BIN_PATH;
+const ampliconTyperExePath = process.env["AMPLICON_TYPER_EXE_PATH"];
+const ampliconTyperInternalBinPath = process.env["AMPLICON_TYPER_INTERNAL_BIN_PATH"];
+
+if (!ampliconTyperExePath || !ampliconTyperInternalBinPath) {
+    throw Error("AMPLICON_TYPER_EXE_PATH and AMPLICON_TYPER_INTERNAL_BIN_PATH env vars must be provided");
+}
+
+console.log(`Running with AmpliconTyper exe path ${ampliconTyperExePath} and internal bin path ${ampliconTyperInternalBinPath}`);
 
 const runner = new AmpliconTyperRunner(ampliconTyperExePath, ampliconTyperInternalBinPath);
 

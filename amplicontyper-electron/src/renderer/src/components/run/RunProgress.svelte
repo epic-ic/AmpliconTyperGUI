@@ -1,7 +1,6 @@
 <script lang="ts">
     import * as ansi_up from "ansi_up";
     import throttle from "throttleit";
-    import { m } from "../../paraglide/messages";
     import { X, Check } from "@lucide/svelte";
     import { Button } from "$lib/shadcn/ui/button";
     import { Spinner } from "$lib/shadcn/ui/spinner";

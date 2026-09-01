@@ -4,7 +4,7 @@ import {AmpliconTyperRunOptions} from "../shared/types";
 export class AmpliconTyperRunner {
   private readonly exePath: string;
   private readonly internalBinPath: string;
-  constructor(exePath: string, internalBinPath) {
+  constructor(exePath: string, internalBinPath: string) {
       this.exePath = exePath;
       this.internalBinPath = internalBinPath;
   }
