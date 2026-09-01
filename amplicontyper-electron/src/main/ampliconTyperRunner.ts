@@ -12,7 +12,8 @@ export class AmpliconTyperRunner {
   public async runAmpliconTyper(options: AmpliconTyperRunOptions,
                                 outputStream: NodeJS.WritableStream = process.stdout): Promise<void> {
 
-      const args = ['-b', options.bamDir, '-m', options.modelFile, '-o', options.outputReportFile];
+      const {parameters} = options;
+      const args = ['-b', parameters.bamDir, '-m', parameters.modelFile, '-o', parameters.outputReportFile];
 
       return new Promise((resolve, reject) => {
           // We need to add the installer's internal bin folder to the subprocess path so that AT's classify

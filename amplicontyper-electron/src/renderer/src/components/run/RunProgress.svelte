@@ -5,7 +5,7 @@
     import { X, Check } from "@lucide/svelte";
     import { Button } from "$lib/shadcn/ui/button";
     import { Spinner } from "$lib/shadcn/ui/spinner";
-    import { ampliconTyperAPI } from "$lib/piranhaAPI.svelte";
+    import { ampliconTyperAPI } from "$lib/ampliconTyperAPI.svelte";
     import { runParameters } from "$lib/store.svelte";
 
     let logEl;
@@ -36,7 +36,7 @@
     };
 </script>
 
-<div data-testid="run-progress">{m.sequencingRunProgress()}</div>
+<div data-testid="run-progress">Running classify for:</div>
 <div class="space-y-2">
     <div class="bg-white mt-2 p-4 border {borderColour}">
         <div class="flex">
@@ -70,7 +70,7 @@
             <span class="font-bold">{runParameters.outputReportFile}</span>
             TODO: open report link via main thread
         </div>
-        <code class="piranha-logs mt-2" data-testid="logs" bind:this={logEl}>
+        <code class="amplicontyper-logs mt-2" data-testid="logs" bind:this={logEl}>
             {#each ampliconTyperAPI.log as logentry, index (index)}
                 <!-- eslint-disable  svelte/no-at-html-tags -->
                 {@html ansi.ansi_to_html(logentry)}<br />

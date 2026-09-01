@@ -2,7 +2,7 @@
     import { Button } from "$lib/shadcn/ui/button";
     import { Input } from "$lib/shadcn/ui/input";
     import FormField from "../forms/FormField.svelte";
-    import { ampliconTyperAPI } from "$lib/piranhaAPI.svelte";
+    import { ampliconTyperAPI } from "$lib/ampliconTyperAPI.svelte";
     import { runParameters, appState } from "$lib/store.svelte";
     import FileSelect from "../forms/FileSelect.svelte";
     import { runParametersSchema } from "./RunFormSchema";
