@@ -20,7 +20,7 @@ export class AmpliconTyperRunner {
           // script can find minimap2
           const env = {
               ...process.env,
-              PATH: `${process.env.PATH};${this.internalBinPath}`
+              PATH: `${process.env.PATH}:${this.internalBinPath}`
           };
 
           const proc = spawn(this.exePath, args, { env });
