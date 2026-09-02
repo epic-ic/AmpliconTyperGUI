@@ -14,6 +14,11 @@ const api = {
     },
     showFileDialog: (options: FileDialogOptions) =>
         ipcRenderer.invoke("show-file-dialog", options),
+    openRunReport: (reportFilePath: string) =>
+    ipcRenderer.invoke(
+        "open-run-report",
+        reportFilePath
+    ),
     onChunk: (callback) =>
         ipcRenderer.on("stream-chunk", (_event, value) => callback(value)),
     onEnd: (callback) => ipcRenderer.on("stream-end", (_event) => callback()),

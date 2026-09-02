@@ -31,9 +31,7 @@ export class AmpliconTyperRunner {
 
           proc.on('close', (code) => {
               outputStream.end();
-              console.log("Run has finished with code " + JSON.stringify(code))
               if (code === 0) {
-                  console.log("Resolving...")
                   resolve();
               } else {
                   reject(new Error(`Process exited with code ${code}`));
@@ -41,7 +39,6 @@ export class AmpliconTyperRunner {
           });
 
           proc.on('error', (err) => {
-              console.log("Run has finished with error " + JSON.stringify(err))
               reject(err);
           });
       });

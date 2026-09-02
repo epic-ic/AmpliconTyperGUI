@@ -108,11 +108,9 @@ function createWindow(): void {
         try {
             await runner
                 .runAmpliconTyper(options, writable);
-            console.log("sending success")
             mainWindow.webContents.send("success");
 
         } catch(e) {
-            console.log("Sending error")
             mainWindow.webContents.send(
                 "error",
                 "Run error",
@@ -120,6 +118,15 @@ function createWindow(): void {
             );
         }
     });
+
+    ipcMain.handle(
+        "open-run-report",
+        async (_event, reportFilePath: string) => {
+            // Convert file path to file:// url
+            const fileUrl = `file://${reportFilePath}`;
+            await shell.openExternal(fileUrl);
+        },
+    );
 }
 
 // This method will be called when Electron has finished

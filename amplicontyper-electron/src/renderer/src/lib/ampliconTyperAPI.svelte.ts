@@ -73,6 +73,12 @@ export class AmpliconTyperAPI {
     async ampliconTyperVersions(): Promise<AmpliconTyperVersions> {
         return await window.api.ampliconTyperVersions();
     }
+
+    async openRunReport(reportFilePath): Promise<void> {
+        await window.api.openRunReport(
+            reportFilePath
+        );
+    }
 }
 
 export const ampliconTyperAPI = new AmpliconTyperAPI();
