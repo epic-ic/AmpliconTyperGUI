@@ -6,7 +6,8 @@ import icon from "../../resources/icon.png?asset";
 import { AmpliconTyperRunner } from "./ampliconTyperRunner";
 import { Writable } from "node:stream";
 import {
-    FileDialogOptions,
+    OpenFileDialogOptions,
+    SaveFileDialogOptions,
     AmpliconTyperRunOptions,
     AmpliconTyperVersions,
 } from "../shared/types";
@@ -49,7 +50,6 @@ function createWindow(): void {
     });
 
     mainWindow.webContents.setWindowOpenHandler((details) => {
-        // Open links in browser
         shell.openExternal(details.url);
         return { action: "deny" };
     });
@@ -72,11 +72,31 @@ function createWindow(): void {
     });
 
     /**
-     * Display a native file dialog and return selection to renderer
+     * Display a native save file dialog and return selection to renderer
      */
     ipcMain.handle(
-        "show-file-dialog",
-        async (_event, options: FileDialogOptions) => {
+        "show-save-file-dialog",
+        async (_event, options: SaveFileDialogOptions) => {
+            console.log("filters is " + JSON.stringify(options.filters))
+            const result = await dialog.showSaveDialog(mainWindow, {
+                title: options.title,
+                defaultPath: options.defaultPath,
+                properties: [
+                    "createDirectory", "showOverwriteConfirmation"
+                ],
+                filters: options.filters || [],
+            });
+            return (!result.canceled && result.filePath) ? result.filePath : null;
+        },
+    );
+
+    /**
+     * Display a native open file dialog and return selection to renderer
+     */
+    ipcMain.handle(
+        "show-open-file-dialog",
+        async (_event, options: OpenFileDialogOptions) => {
+            console.log("filters is " + JSON.stringify(options.filters))
             const openType = options.selectFolder ? "openDirectory" : "openFile";
             const result = await dialog.showOpenDialog(mainWindow, {
                 title: options.title,

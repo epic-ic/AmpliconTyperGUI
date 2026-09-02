@@ -4,6 +4,7 @@
     let {
         title,
         id,
+        save, // set to true if selecting an output file to be created, rather than an existing file or folder
         selectFolder,
         filters,
         onchange,
@@ -11,12 +12,21 @@
     } = $props();
 
     const showDialog = async (): Promise<void> => {
-        const selected = await window.api.showFileDialog({
-            title,
-            selectFolder,
-            filters,
-            defaultPath: value,
-        });
+        let selected;
+        if (save) {
+            selected = await window.api.showSaveFileDialog({
+                title,
+                filters,
+                defaultPath: value,
+            });
+        } else {
+            selected = await window.api.showOpenFileDialog({
+                title,
+                selectFolder,
+                filters,
+                defaultPath: value,
+            });
+        }
         if (selected !== null) {
             value = selected;
             if (onchange) {

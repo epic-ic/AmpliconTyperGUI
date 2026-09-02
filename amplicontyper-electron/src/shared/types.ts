@@ -23,14 +23,17 @@ export interface AppState {
     doneInitialValidate: boolean;
 }
 
-export interface FileDialogOptions {
+export interface SaveFileDialogOptions {
     title: string;
     defaultPath: string;
-    selectFolder: boolean;
     filters?: {
         name: string;
         extensions: string[];
     }[];
+}
+
+export interface OpenFileDialogOptions extends SaveFileDialogOptions{
+    selectFolder: boolean;
 }
 
 

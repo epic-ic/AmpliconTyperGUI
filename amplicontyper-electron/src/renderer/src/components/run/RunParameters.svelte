@@ -57,6 +57,7 @@
             <FileSelect
                     id="bam-dir-field"
                     title="BAM folder"
+                    save={false}
                     selectFolder={true}
                     onchange={onChange}
                     bind:value={runParameters.bamDir}
@@ -71,7 +72,9 @@
             <FileSelect
                     id="model-field"
                     title="Model"
+                    save={false}
                     selectFolder={false}
+                    filters={[{name: "Pickle Files", extensions: ["pkl"]}]}
                     onchange={onChange}
                     bind:value={runParameters.modelFile}
             ></FileSelect>
@@ -85,7 +88,9 @@
             <FileSelect
                     id="output-report-file-field"
                     title="Output report file"
+                    save={true}
                     selectFolder={false}
+                    filters={[{name: "HTML Files", extensions: ["html"]}]}
                     onchange={onChange}
                     bind:value={runParameters.outputReportFile}
             ></FileSelect>

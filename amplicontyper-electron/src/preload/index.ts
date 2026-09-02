@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import {
-    FileDialogOptions,
+    OpenFileDialogOptions,
+    SaveFileDialogOptions,
     AmpliconTyperRunOptions
 } from "../shared/types";
 
@@ -12,8 +13,10 @@ const api = {
     runAmpliconTyper: (options: AmpliconTyperRunOptions) => {
         return ipcRenderer.invoke("run-amplicontyper", options);
     },
-    showFileDialog: (options: FileDialogOptions) =>
-        ipcRenderer.invoke("show-file-dialog", options),
+    showOpenFileDialog: (options: OpenFileDialogOptions) =>
+        ipcRenderer.invoke("show-open-file-dialog", options),
+    showSaveFileDialog: (options: SaveFileDialogOptions) =>
+        ipcRenderer.invoke("show-save-file-dialog", options),
     openRunReport: (reportFilePath: string) =>
     ipcRenderer.invoke(
         "open-run-report",
