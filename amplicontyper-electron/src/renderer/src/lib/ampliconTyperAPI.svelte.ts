@@ -1,13 +1,14 @@
 import type { AmpliconTyperRunParameters, AmpliconTyperRunOptions, AmpliconTyperVersions } from "../../../shared/types";
 
 export interface AmpliconTyperError {
-    messageKey: string;
+    message: string;
     detail: string;
 }
 
 export class AmpliconTyperAPI {
     #running = $state(false);
     #error: AmpliconTyperError | null = $state(null);
+    #success = $state(false);
     #log: string[] = $state([]);
     #decoder = new TextDecoder("utf-8");
 
@@ -17,14 +18,18 @@ export class AmpliconTyperAPI {
             const lines = textChunk.split("\n");
             this.#log.push(...lines);
         });
-        window.api?.onEnd(async () => {
-            this.#log.push("AmpliconTyper Run Finished");
+        window.api?.onEnd(() => {
+            // Stream has ended
             this.#running = false;
+            this.#log.push("AmpliconTyper Run Finished");
         });
-        window.api?.onError((messageKey, detail) => {
-            this.#error = { messageKey, detail };
+        window.api?.onSuccess(() => {
+            this.#success = true;
+        }),
+        window.api?.onError((message, detail) => {
+            this.#error = { message, detail };
             // Add error to log, including ansi sequence to show in Red
-            this.#addErrorToLog(`${m[messageKey]()}: ${detail}`);
+            this.#addErrorToLog(`${message}: ${detail}`);
         });
     }
 
@@ -36,6 +41,10 @@ export class AmpliconTyperAPI {
         return this.#error;
     }
 
+    get success(): boolean {
+        return this.#success;
+    }
+
     get log(): string[] {
         return this.#log;
     }
@@ -44,18 +53,21 @@ export class AmpliconTyperAPI {
         this.#log.push(`\x1b[1;31m${error}`);
     }
 
-    async runAmpliconTyper(parameters: AmpliconTyperRunParameters): void {
+    async runAmpliconTyper(parameters: AmpliconTyperRunParameters): Promise<void> {
         if (this.#running) {
-            throw new Error(m.apiErrorAlreadyRunning());
+            throw new Error("AmpliconTyper is already running");
         }
         this.#log = [];
-        await window.api.runAmpliconTyper({parameters, settings: {}});
         this.#running = true;
+        await window.api.runAmpliconTyper({parameters: {...parameters}, settings: {}});
+
     }
 
     clearRun(): void {
         this.#log = [];
         this.#error = null;
+        this.#running = false;
+        this.#success = false;
     }
 
     async ampliconTyperVersions(): Promise<AmpliconTyperVersions> {

@@ -17,6 +17,7 @@ const api = {
     onChunk: (callback) =>
         ipcRenderer.on("stream-chunk", (_event, value) => callback(value)),
     onEnd: (callback) => ipcRenderer.on("stream-end", (_event) => callback()),
+    onSuccess: (callback) => ipcRenderer.on("success", (_event) => callback()),
     onError: (callback) =>
         ipcRenderer.on("error", (_event, error, detail) => callback(error, detail)),
 }

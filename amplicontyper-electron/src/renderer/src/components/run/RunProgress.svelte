@@ -48,7 +48,7 @@
                     ></Spinner>
                 {:else if ampliconTyperAPI.error}
                     <X class="text-red-600" data-testid="run-progress-x"></X>
-                {:else}
+                {:else if ampliconTyperAPI.success}
                     <Check class="text-green-600" data-testid="run-progress-check"
                     ></Check>
                 {/if}
@@ -61,7 +61,7 @@
         <div class="h-[2rem] flex items-center">
             <div>
                 Model:
-                <span class="font-bold">{runParameters.model}</span>
+                <span class="font-bold">{runParameters.modelFile}</span>
             </div>
         </div>
         <div class="h-[2rem] flex items-center space-x-2">

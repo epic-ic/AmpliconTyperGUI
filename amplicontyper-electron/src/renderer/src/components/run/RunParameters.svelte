@@ -1,6 +1,5 @@
 <script lang="ts">
     import { Button } from "$lib/shadcn/ui/button";
-    import { Input } from "$lib/shadcn/ui/input";
     import FormField from "../forms/FormField.svelte";
     import { ampliconTyperAPI } from "$lib/ampliconTyperAPI.svelte";
     import { runParameters, appState } from "$lib/store.svelte";
@@ -10,9 +9,7 @@
     let errors = $state<Record<string, string[]>>({});
 
     function validate(): boolean {
-        const result = runParametersSchema().safeParse({
-            runParameters
-        });
+        const result = runParametersSchema().safeParse({...runParameters});
         if (!result.success) {
             errors = result.error.flatten().fieldErrors;
         } else {
@@ -45,7 +42,7 @@
     }
 </script>
 
-<div data-testid="new-run-title">{m.newSequencingRun()}</div>
+<div data-testid="new-run-title">New Run</div>
 <form onsubmit={onSubmit}>
     <div
             id="scrolling-container"
@@ -76,7 +73,7 @@
                     title="Model"
                     selectFolder={false}
                     onchange={onChange}
-                    bind:value={runParameters.model}
+                    bind:value={runParameters.modelFile}
             ></FileSelect>
         </FormField>
         <FormField
@@ -90,7 +87,7 @@
                     title="Output report file"
                     selectFolder={false}
                     onchange={onChange}
-                    bind:value={runParameters.outputReport}
+                    bind:value={runParameters.outputReportFile}
             ></FileSelect>
         </FormField>
     </div>

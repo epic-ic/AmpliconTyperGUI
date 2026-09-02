@@ -4,13 +4,13 @@
     --radius: 0.625rem;
     --attitle: #dae8ea;
     --nav-current: #a2bec3;
-    --background: #fbf8ea;
+    --background: #f8f8fb;
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
-    --primary: #19434c;
+    --primary: #4444bb;
     --primary-foreground: oklch(0.985 0 0);
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
@@ -207,6 +207,7 @@
 
 .at-title {
     color: var(--attitle);
+    margin-left: 1rem;
 }
 
 .nav-link {

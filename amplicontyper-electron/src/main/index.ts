@@ -92,6 +92,7 @@ function createWindow(): void {
      * Handles request from renderer to run AmpliconTyper and stream logs back to the main window
      */
     ipcMain.handle("run-amplicontyper", async (_event, options: AmpliconTyperRunOptions) => {
+        console.log("running amplicon typer from main")
         const writable = new Writable({
             write(chunk, _, callback) {
                 // Send each chunk to the renderer
@@ -106,11 +107,15 @@ function createWindow(): void {
 
         try {
             await runner
-                .runAmpliconTyper(options, writable)
+                .runAmpliconTyper(options, writable);
+            console.log("sending success")
+            mainWindow.webContents.send("success");
+
         } catch(e) {
+            console.log("Sending error")
             mainWindow.webContents.send(
                 "error",
-                "runError",
+                "Run error",
                 (e as Error).message,
             );
         }

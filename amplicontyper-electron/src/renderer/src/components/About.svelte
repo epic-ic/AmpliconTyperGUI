@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { AmpliconTyperVersions } from "../../../shared/types";
+    import type { AmpliconTyperVersions } from "../../../shared/types";
     import { ampliconTyperAPI } from "$lib/ampliconTyperAPI.svelte";
 
     let versions: AmpliconTyperVersions | null = $state(null);
@@ -16,7 +16,7 @@
     >
         <h1 class="mb-4" data-testid="about-header">About AmpliconTyper</h1>
         <div data-testid="versions" class="text-xl">
-            <p>AmpliconTyperGUI v{versions?.ampliconTyper}</p>
+            <p>AmpliconTyperGUI v{versions?.ampliconTyperGUI}</p>
         </div>
         <div>Placeholder for About screen content</div>
     </div>
