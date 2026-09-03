@@ -8,7 +8,7 @@ This directory contains the PyInstaller spec for building AmpliconTyper's classi
 
 ## Build
 To build the installer, run `./pyinstaller/build_installer.sh` from this folder.
-This creates and activates a micromambe environment from `environment.yml` then builds the installer specified by
+This creates and activates a micromamba environment from `environment.yml` then builds the installer specified by
 `./pyinstaller/amplicontyper_installer.spec`. The installer is built to the local `./dist` folder.
 
 We build a "one directory" executable rather than "one file" because AmpliconTyper runs minimap2 externally and searches
