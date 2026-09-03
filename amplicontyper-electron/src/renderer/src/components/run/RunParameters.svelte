@@ -7,6 +7,20 @@
     import { runParametersSchema } from "./RunFormSchema";
 
     let errors = $state<Record<string, string[]>>({});
+    const labels = {
+        bamDir: {
+            label: "BAM folder",
+            help: "Folder containing input BAM files, or an individual BAM and corresponding BAM index files (.bai)."
+        },
+        modelFile: {
+            label: "Model file",
+            help: "Pickle (.pkl) file containing pre-trained model. Model must be trained on same reference."
+        },
+        outputReportFile: {
+            label: "Output report file",
+            help: "Path of output HTML file to store classification results."
+        }
+    };
 
     function validate(): boolean {
         const result = runParametersSchema().safeParse({...runParameters});
@@ -42,15 +56,15 @@
     }
 </script>
 
-<div data-testid="new-run-title">New Run</div>
+<h2 data-testid="new-run-title">New Run</h2>
 <form onsubmit={onSubmit}>
     <div
             id="scrolling-container"
             class="max-h-[calc(100vh-10rem)] overflow-y-auto px-2"
     >
         <FormField
-                label="BAM folder"
-                help="TODO: help for BAM folder"
+                label={labels.bamDir.label}
+                help={labels.bamDir.help}
                 error={errors.bamDir}
                 labelFor="bam-dir-field"
         >
@@ -64,9 +78,9 @@
             ></FileSelect>
         </FormField>
         <FormField
-                label="Model"
-                help="TODO: help for Model"
-                error={errors.model}
+                label={labels.modelFile.label}
+                help={labels.modelFile.help}
+                error={errors.modelFile}
                 labelFor="model-field"
         >
             <FileSelect
@@ -80,9 +94,9 @@
             ></FileSelect>
         </FormField>
         <FormField
-                label="Output report file"
-                help="TODO: help for Output report file"
-                error={errors.model}
+                label={labels.outputReportFile.label}
+                help={labels.outputReportFile.help}
+                error={errors.outputReportFile}
                 labelFor="output-report-file-field"
         >
             <FileSelect

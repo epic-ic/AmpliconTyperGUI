@@ -35,7 +35,7 @@
     };
 </script>
 
-<div data-testid="run-progress">Run Progress</div>
+<h2 data-testid="run-progress">Run Progress</h2>
 <div class="space-y-2">
     <div class="bg-white mt-2 p-4 border {borderColour}">
         <div class="flex">
