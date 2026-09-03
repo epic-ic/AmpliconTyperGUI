@@ -4,7 +4,7 @@
     --radius: 0.625rem;
     --attitle: #dae8ea;
     --nav-current: #a2bec3;
-    --background: #f8f8fb;
+    --background: #fafaff;
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
@@ -113,6 +113,13 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+@font-face {
+    font-family: 'Roboto Slab';
+    src: url('/fonts/RobotoSlab-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
 @layer base {
     * {
         @apply border-border outline-ring/50;
@@ -206,7 +213,7 @@
 }
 
 .at-title {
-    font-family: "Courier";
+    font-family: 'Roboto Slab', serif;
     color: var(--attitle);
     margin-left: 1rem;
 }

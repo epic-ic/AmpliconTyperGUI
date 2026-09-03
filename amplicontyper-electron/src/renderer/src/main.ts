@@ -1,4 +1,5 @@
 import { mount } from "svelte";
+import "@fontsource/roboto-slab";
 
 import App from "./App.svelte";
 
