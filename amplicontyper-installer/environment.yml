@@ -1,0 +1,9 @@
+name: amplicontyper-installer
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - amplicontyper>=0.1.35
+  - minimap2
+  - pyinstaller>=6.0
