@@ -14,16 +14,8 @@ import {
 
 // TODO: specify AmpliconTyper version. This should be the version we use when we build the PyInstaller
 const ampliconTyperGUIVersion = pkg.version;
-const ampliconTyperExePath = process.env["AMPLICON_TYPER_EXE_PATH"];
-const ampliconTyperInternalBinPath = process.env["AMPLICON_TYPER_INTERNAL_BIN_PATH"];
 
-if (!ampliconTyperExePath || !ampliconTyperInternalBinPath) {
-    throw Error("AMPLICON_TYPER_EXE_PATH and AMPLICON_TYPER_INTERNAL_BIN_PATH env vars must be provided");
-}
-
-console.log(`Running with AmpliconTyper exe path ${ampliconTyperExePath} and internal bin path ${ampliconTyperInternalBinPath}`);
-
-const runner = new AmpliconTyperRunner(ampliconTyperExePath, ampliconTyperInternalBinPath);
+let runner: AmpliconTyperRunner;
 
 function createWindow(): void {
     // Create the browser window.
@@ -155,6 +147,24 @@ function createWindow(): void {
 app.whenReady().then(async () => {
     // Set app user model id for windows
     electronApp.setAppUserModelId("com.electron");
+
+    let resourcesPath: string | undefined;
+    if (app.isPackaged) {
+        resourcesPath = path.join(process.resourcesPath, "AmpliconTyper");
+    } else {
+        resourcesPath = process.env["AMPLICON_TYPER_DEV_RESOURCES_PATH"];
+        if (!resourcesPath) {
+            throw Error("AMPLICON_TYPER_DEV_RESOURCES_PATH env var must be provided");
+        }
+    }
+
+    const ampliconTyperExePath = path.join(resourcesPath, "amplicontyper_classify");
+    const ampliconTyperInternalBinPath = path.join(resourcesPath, "amplicontyper", "_internal");
+
+    console.log(`Running with AmpliconTyper exe path ${ampliconTyperExePath} and internal bin path ${ampliconTyperInternalBinPath}`);
+
+    runner = new AmpliconTyperRunner(ampliconTyperExePath, ampliconTyperInternalBinPath);
+
 
     // Default open or close DevTools by F12 in development
     // and ignore CommandOrControl + R in production.
