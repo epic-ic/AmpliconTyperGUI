@@ -36,16 +36,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+      - name: Make amplicontyper-installer/dist folder
+        run: |
+          cd ../amplicontyper-installer
+          mkdir dist
       - name: Download amplicontyper dist artifact
         uses: actions/download-artifact@v7
         with:
           name: amplicontyper-dist
-          path: ./amplicontyper-installer
-      - name: debug
-        run: |
-          cd ../amplicontyper-installer
-          ls
-          ls dist
+          path: ./amplicontyper-installer/dist
       - name: Install Node
         uses: actions/setup-node@v5
         with:
