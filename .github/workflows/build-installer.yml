@@ -45,6 +45,10 @@ jobs:
         with:
           name: amplicontyper-dist
           path: ./amplicontyper-installer/dist
+      - name: debug
+        run: |
+          cd ../amplicontyper-installer
+          ls dist
       - name: Install Node
         uses: actions/setup-node@v5
         with:
