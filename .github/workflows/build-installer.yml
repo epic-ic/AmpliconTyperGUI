@@ -58,8 +58,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: amplicontyper-electron/dist/*.deb
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifacts (if not a release)
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
