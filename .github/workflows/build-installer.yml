@@ -41,8 +41,11 @@ jobs:
         with:
           name: amplicontyper-dist
           path: ./amplicontyper-installer
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      - name: debug
+        run: |
+          cd ../amplicontyper-installer
+          ls
+          ls dist
       - name: Install Node
         uses: actions/setup-node@v5
         with:
