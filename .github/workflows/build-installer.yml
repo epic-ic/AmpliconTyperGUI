@@ -70,12 +70,18 @@ jobs:
             amplicontyper-electron/dist/*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload artifacts (if not a release)
+      - name: Upload deb artifact (if not a release)
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
         with:
-          name: amplicontyper-gui-linux-installer-${{ github.run_number }}
-          path: |
-            amplicontyper-electron/dist/*.deb
-            amplicontyper-electron/dist/*.AppImage
+          name: amplicontyper-gui-linux-deb-installer-${{ github.run_number }}
+          path: amplicontyper-electron/dist/*.deb
           retention-days: 10
+      - name: Upload AppImage artifact (if not a release)
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v7
+        with:
+          name: amplicontyper-gui-linux-appimage-installer-${{ github.run_number }}
+          path: amplicontyper-electron/dist/*.AppImage
+          retention-days: 10
+
