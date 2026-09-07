@@ -29,6 +29,8 @@ export class AmpliconTyperRunner {
           proc.stdout.pipe(outputStream);
           proc.stderr.pipe(outputStream);
 
+          outputStream.write(`Running with bin path ${this.internalBinPath}`);
+
           proc.on('close', (code) => {
               outputStream.end();
               if (code === 0) {
