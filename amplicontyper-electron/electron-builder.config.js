@@ -12,6 +12,7 @@ export default {
     ],
     linux: {
         target: ["AppImage", "deb"],
+        icon: "resources/icon.png",
         category: "Utility"
     },
     nsis: {
