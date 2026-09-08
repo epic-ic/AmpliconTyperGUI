@@ -15,7 +15,14 @@ export class AmpliconTyperAPI {
     constructor() {
         window.api?.onChunk((chunk) => {
             const textChunk = this.#decoder.decode(chunk, { stream: true });
-            const lines = textChunk.split("\n");
+            let lines = textChunk.split("\n");
+            // Also split by carriage return "\r" but retain those at the starts of lines. These indicate that  this
+            // line should overwrite the previous line. RunProgress component handles the display part.
+            lines = lines.flatMap((l) => l
+                .split("\r") // do the split
+                .map((rl, index) => index > 0 ? `\r${rl}` : rl) // retain the `\r`s
+                .filter((rl, index) => rl.length !== 0) // remove rogue starting empty string if whole line started with \r
+            );
             this.#log.push(...lines);
         });
         window.api?.onEnd(() => {
