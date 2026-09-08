@@ -21,7 +21,7 @@ export class AmpliconTyperAPI {
             lines = lines.flatMap((l) => l
                 .split("\r") // do the split
                 .map((rl, index) => index > 0 ? `\r${rl}` : rl) // retain the `\r`s
-                .filter((rl, index) => rl.length !== 0) // remove rogue starting empty string if whole line started with \r
+                .filter((rl, index, arr) => arr.length == 1 || index !== 0 || rl.length !== 0) // remove rogue starting empty string if whole line started with \r
             );
             this.#log.push(...lines);
         });
