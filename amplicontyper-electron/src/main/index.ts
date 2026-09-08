@@ -77,7 +77,6 @@ function createWindow(): void {
     ipcMain.handle(
         "show-save-file-dialog",
         async (_event, options: SaveFileDialogOptions) => {
-            console.log("filters is " + JSON.stringify(options.filters))
             const result = await dialog.showSaveDialog(mainWindow, {
                 title: options.title,
                 defaultPath: options.defaultPath,
@@ -96,7 +95,6 @@ function createWindow(): void {
     ipcMain.handle(
         "show-open-file-dialog",
         async (_event, options: OpenFileDialogOptions) => {
-            console.log("filters is " + JSON.stringify(options.filters))
             const openType = options.selectFolder ? "openDirectory" : "openFile";
             const result = await dialog.showOpenDialog(mainWindow, {
                 title: options.title,
@@ -112,7 +110,6 @@ function createWindow(): void {
      * Handles request from renderer to run AmpliconTyper and stream logs back to the main window
      */
     ipcMain.handle("run-amplicontyper", async (_event, options: AmpliconTyperRunOptions) => {
-        console.log("running amplicon typer from main")
         const writable = new Writable({
             write(chunk, _, callback) {
                 // Send each chunk to the renderer
