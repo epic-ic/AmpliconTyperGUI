@@ -70,7 +70,7 @@
         >
             <FileSelect
                     id="bam-dir-field"
-                    title="BAM folder"
+                    title={labels.bamDir.label}
                     save={false}
                     selectFolder={true}
                     onchange={onChange}
@@ -85,7 +85,7 @@
         >
             <FileSelect
                     id="model-field"
-                    title="Model"
+                    title={labels.modelFile.label}
                     save={false}
                     selectFolder={false}
                     filters={[{name: "Pickle Files", extensions: ["pkl"]}]}
@@ -101,7 +101,7 @@
         >
             <FileSelect
                     id="output-report-file-field"
-                    title="Output report file"
+                    title={labels.outputReportFile.label}
                     save={true}
                     selectFolder={false}
                     filters={[{name: "HTML Files", extensions: ["html"]}]}

@@ -11,21 +11,28 @@ import {
     AmpliconTyperRunOptions,
     AmpliconTyperVersions,
 } from "../shared/types";
+import {isWindows, isWSLInstalled} from "./utils";
 
 // TODO: specify AmpliconTyper version. This should be the version we use when we build the PyInstaller
 const ampliconTyperGUIVersion = pkg.version;
-const ampliconTyperExePath = process.env["AMPLICON_TYPER_EXE_PATH"];
-const ampliconTyperInternalBinPath = process.env["AMPLICON_TYPER_INTERNAL_BIN_PATH"];
 
-if (!ampliconTyperExePath || !ampliconTyperInternalBinPath) {
-    throw Error("AMPLICON_TYPER_EXE_PATH and AMPLICON_TYPER_INTERNAL_BIN_PATH env vars must be provided");
-}
+let runner: AmpliconTyperRunner;
 
-console.log(`Running with AmpliconTyper exe path ${ampliconTyperExePath} and internal bin path ${ampliconTyperInternalBinPath}`);
+async function createWindow(): Promise<void> {
+    if (isWindows()) {
+        const wslInstalled = await isWSLInstalled();
+        if (!wslInstalled) {
+            dialog.showErrorBox(
+                "WSL Not Found",
+                "AmpliconTyper requires Windows Subsystem for Linux (WSL) to be installed.\n\n" +
+                "Please install WSL by running this command in PowerShell as Administrator:\n\n" +
+                "wsl --install"
+            );
+            app.quit();
+            return;
+        }
+    }
 
-const runner = new AmpliconTyperRunner(ampliconTyperExePath, ampliconTyperInternalBinPath);
-
-function createWindow(): void {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         width: 1200,
@@ -153,6 +160,24 @@ app.whenReady().then(async () => {
     // Set app user model id for windows
     electronApp.setAppUserModelId("com.electron");
 
+    let resourcesPath: string | undefined;
+    if (app.isPackaged) {
+        resourcesPath = path.join(process.resourcesPath, "AmpliconTyper");
+    } else {
+        resourcesPath = process.env["AMPLICON_TYPER_DEV_RESOURCES_PATH"];
+        if (!resourcesPath) {
+            throw Error("AMPLICON_TYPER_DEV_RESOURCES_PATH env var must be provided");
+        }
+    }
+
+    const ampliconTyperExePath = path.join(resourcesPath, "amplicontyper_classify");
+    const ampliconTyperInternalBinPath = path.join(resourcesPath, "amplicontyper", "_internal");
+
+    console.log(`Running with AmpliconTyper exe path ${ampliconTyperExePath} and internal bin path ${ampliconTyperInternalBinPath}`);
+
+    runner = new AmpliconTyperRunner(ampliconTyperExePath, ampliconTyperInternalBinPath);
+
+
     // Default open or close DevTools by F12 in development
     // and ignore CommandOrControl + R in production.
     // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
@@ -160,7 +185,7 @@ app.whenReady().then(async () => {
         optimizer.watchWindowShortcuts(window);
     });
 
-    createWindow();
+    await createWindow();
 
     app.on("activate", function () {
         // On macOS it's common to re-create a window in the app when the
