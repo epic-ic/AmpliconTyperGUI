@@ -15,6 +15,9 @@ export default {
         icon: "resources/icon.png",
         category: "Utility"
     },
+    win: {
+        target: ["nsis"],
+    },
     nsis: {
         oneClick: false,
         allowToChangeInstallationDirectory: true,

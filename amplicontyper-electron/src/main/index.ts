@@ -11,13 +11,28 @@ import {
     AmpliconTyperRunOptions,
     AmpliconTyperVersions,
 } from "../shared/types";
+import {isWindows, isWSLInstalled} from "./utils";
 
 // TODO: specify AmpliconTyper version. This should be the version we use when we build the PyInstaller
 const ampliconTyperGUIVersion = pkg.version;
 
 let runner: AmpliconTyperRunner;
 
-function createWindow(): void {
+async function createWindow(): Promise<void> {
+    if (isWindows()) {
+        const wslInstalled = await isWSLInstalled();
+        if (!wslInstalled) {
+            dialog.showErrorBox(
+                "WSL Not Found",
+                "AmpliconTyper requires Windows Subsystem for Linux (WSL) to be installed.\n\n" +
+                "Please install WSL by running this command in PowerShell as Administrator:\n\n" +
+                "wsl --install"
+            );
+            app.quit();
+            return;
+        }
+    }
+
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         width: 1200,
@@ -173,7 +188,7 @@ app.whenReady().then(async () => {
         optimizer.watchWindowShortcuts(window);
     });
 
-    createWindow();
+    await createWindow();
 
     app.on("activate", function () {
         // On macOS it's common to re-create a window in the app when the

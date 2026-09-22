@@ -1,5 +1,6 @@
 import {spawn} from "child_process";
 import {AmpliconTyperRunOptions} from "../shared/types";
+import {isWindows} from "./utils";
 
 export class AmpliconTyperRunner {
   private readonly exePath: string;
@@ -23,7 +24,13 @@ export class AmpliconTyperRunner {
               PATH: `${process.env.PATH}:${this.internalBinPath}`
           };
 
-          const proc = spawn(this.exePath, args, { env });
+          let proc;
+          if (isWindows()) {
+              // On Windows we need to run with WSL
+              proc = spawn("wsl.exe", [this.exePath, ...args], { env });
+          } else {
+              proc = spawn(this.exePath, args, { env });
+          }
 
           // Pipe both stdout and stderr to the output stream
           proc.stdout.pipe(outputStream);
