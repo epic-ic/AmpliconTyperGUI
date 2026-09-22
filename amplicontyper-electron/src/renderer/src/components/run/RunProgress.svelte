@@ -30,6 +30,14 @@
         }
     });
 
+    const shouldDisplayLogEntry = (logEntryIndex: number) => {
+        // AmpliconTyper logs include tqdm progress logging where log entries
+        // starting with \r overwrite the previous line (so you don't get multiple
+        // lines showing each stage of the progress bar). Replicate this here,
+        // by omitting any log entries which are followed by an entry starting with /r
+        return logEntryIndex >= (ampliconTyperAPI.log.length-1) || !ampliconTyperAPI.log[logEntryIndex+1].startsWith("\r")
+    }
+
     const clearRun = (): void => {
         ampliconTyperAPI.clearRun();
     };
@@ -77,8 +85,10 @@
         </div>
         <code class="amplicontyper-logs mt-2" data-testid="logs" bind:this={logEl}>
             {#each ampliconTyperAPI.log as logentry, index (index)}
-                <!-- eslint-disable  svelte/no-at-html-tags -->
-                {@html ansi.ansi_to_html(logentry)}<br />
+                {#if shouldDisplayLogEntry(index)}
+                    <!-- eslint-disable  svelte/no-at-html-tags -->
+                    {@html ansi.ansi_to_html(logentry)}<br />
+                {/if}
             {/each}
         </code>
     </div>
