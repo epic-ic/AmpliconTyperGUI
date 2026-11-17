@@ -13,11 +13,9 @@
     "checkJs": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "composite": true,
-    "compilerOptions": {
-      "paths": {
-        "$lib": ["./src/renderer/src/lib"],
-        "$lib/*": ["./src/renderer/src/lib/*"]
-      }
+    "paths": {
+      "$lib": ["./src/renderer/src/lib"],
+      "$lib/*": ["./src/renderer/src/lib/*"]
     }
   }
 }
