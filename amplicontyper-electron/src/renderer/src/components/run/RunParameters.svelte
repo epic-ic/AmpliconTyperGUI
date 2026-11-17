@@ -50,7 +50,7 @@
         appState.doneInitialSubmit = true;
     }
 
-    // We may be reloading after a language change - validate in new language if initial submit has been done
+    // We may be reloading after nav to another page - validate if initial submit has been done
     if (appState.doneInitialSubmit) {
         validate();
     }
