@@ -6,6 +6,12 @@ This approach is largely based on [PiranhaNET](https://github.com/polio-nanopore
 here we are running a PyInstaller-built local executable rather than a docker container, and that we do not need to 
 support a separate web application, so the Svelte app source is local to the renderer folder of the Electron app. 
 
+The directory structure under `src` follows Electron convention, with the following subdirectories:
+- `main` - code which runs in the main thread, which has access to the file system and other os native functionality
+- `renderer` - front end web code which forms the app's GUI
+- `preload` - code which defines the interface between the main and renderer threads, and any other set up code
+- `shared` - types which are shared between the main and renderer threads. 
+
 ## Prerequisites
 - Node 26
 
