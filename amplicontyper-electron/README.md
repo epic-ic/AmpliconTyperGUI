@@ -17,7 +17,17 @@ Before running the AmpliconTyperGUI you should do a local build of the AmpliconT
 Install deps: `npm ci`
 Run Electron app in dev mode: `npm run dev`
 
-You can also do a separate Typescript build with `npm run build` but this is not necessary for a dev run. 
+You can also do a separate Typescript build with `npm run build` but this is not necessary for a dev run
+
+### Troubleshooting
+If you see the following error on `npm run dev`:
+```
+error during start dev server and electron app:
+Error: Electron uninstall
+    at getElectronPath 
+...    
+```
+then run `npm run install-electron` to rebuild and re-install the electron package. 
 
 ## Tests
 
