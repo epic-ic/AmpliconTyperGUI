@@ -140,6 +140,7 @@ function createWindow(): void {
         "open-run-report",
         async (_event, reportFilePath: string) => {
             // Convert file path to file:// url
+            // TODO: support Windows paths
             const fileUrl = `file://${reportFilePath}`;
             await shell.openExternal(fileUrl);
         },
