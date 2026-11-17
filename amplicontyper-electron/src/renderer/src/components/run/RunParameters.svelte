@@ -10,7 +10,7 @@
     const labels = {
         bamDir: {
             label: "BAM folder",
-            help: "Folder containing input BAM files, or an individual BAM and corresponding BAM index files (.bai)."
+            help: "Folder which contains either input BAM files, or an individual BAM and corresponding BAM index files (.bai)."
         },
         modelFile: {
             label: "Model file",
