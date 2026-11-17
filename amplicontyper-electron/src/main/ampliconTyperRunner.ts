@@ -1,5 +1,8 @@
 import {spawn} from "child_process";
+import path from "node:path";
 import {AmpliconTyperRunOptions} from "../shared/types";
+
+const pathDelimiter = path.delimiter;
 
 export class AmpliconTyperRunner {
   private readonly exePath: string;
@@ -20,7 +23,7 @@ export class AmpliconTyperRunner {
           // script can find minimap2
           const env = {
               ...process.env,
-              PATH: `${process.env.PATH}:${this.internalBinPath}`
+              PATH: `${process.env.PATH}${pathDelimiter}${this.internalBinPath}`
           };
 
           const proc = spawn(this.exePath, args, { env });
