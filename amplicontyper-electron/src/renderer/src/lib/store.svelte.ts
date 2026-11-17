@@ -15,6 +15,9 @@ export const appState: AppState = $state({
 const defaultRunParameters = (): AmpliconTyperRunParameters => ({
     bamDir: "",
     modelFile: "",
+    metadataFile: "",
+    metadataFileDelimiter: "TAB",
+    metadataDescriptionColumn: "Description",
     outputReportFile: ""
 });
 

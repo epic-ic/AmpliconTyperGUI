@@ -6,6 +6,9 @@ export interface AmpliconTyperVersions {
 export interface AmpliconTyperRunParameters{
     bamDir: string,
     modelFile: string,
+    metadataFile: string,
+    metadataFileDelimiter: string,
+    metadataDescriptionColumn: string,
     outputReportFile: string
 }
 
