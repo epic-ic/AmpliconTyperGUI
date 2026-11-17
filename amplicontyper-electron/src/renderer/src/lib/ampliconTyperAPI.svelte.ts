@@ -1,4 +1,4 @@
-import type { AmpliconTyperRunParameters, AmpliconTyperRunOptions, AmpliconTyperVersions } from "../../../shared/types";
+import type { AmpliconTyperRunParameters, AmpliconTyperVersions } from "../../../shared/types";
 
 export interface AmpliconTyperError {
     message: string;
@@ -32,7 +32,7 @@ export class AmpliconTyperAPI {
         });
         window.api?.onSuccess(() => {
             this.#success = true;
-        }),
+        });
         window.api?.onError((message, detail) => {
             this.#error = { message, detail };
             // Add error to log, including ansi sequence to show in Red

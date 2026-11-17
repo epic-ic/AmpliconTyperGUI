@@ -1,12 +1,12 @@
 import { test, expect, Locator, Page } from "@playwright/test";
-import { initialiseTest, launchApp, getWindow } from "./utils";
+import { initialiseTest, getWindow } from "./utils";
 let electronApp;
 
 const join = (...args): string => {
     return args.join("/");
 };
 
-const getRepoRoot = (app) => {
+const getRepoRoot = (app): string => {
     const currentDir = app.getAppPath();
 
     const repoRoot = join(...currentDir.split("/").slice(0, -3));

@@ -30,7 +30,7 @@
         }
     });
 
-    const shouldDisplayLogEntry = (logEntryIndex: number) => {
+    const shouldDisplayLogEntry = (logEntryIndex: number): boolean => {
         // AmpliconTyper logs include tqdm progress logging where log entries
         // starting with \r overwrite the previous line (so you don't get multiple
         // lines showing each stage of the progress bar). Replicate this here,

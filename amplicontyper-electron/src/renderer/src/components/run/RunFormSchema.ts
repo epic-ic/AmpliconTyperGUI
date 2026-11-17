@@ -1,4 +1,4 @@
-import { z, type ZodString, type ZodObject, type ZodRawShape } from "zod";
+import { z, type ZodString, type ZodObject } from "zod";
 
 const requiredString = (): ZodString =>
     z.string().nonempty("Required value");
