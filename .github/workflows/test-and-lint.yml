@@ -1,4 +1,4 @@
-name: Test and Link
+name: Test and Lint
 on:
   push:
     branches: [ main ]
