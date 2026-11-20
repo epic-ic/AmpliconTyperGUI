@@ -1,10 +1,16 @@
 <script lang="ts">
+    import { onMount, tick } from "svelte";
     import { useTinyRouter } from "svelte-tiny-router";
     import * as NavigationMenu from "$lib/shadcn/ui/navigation-menu";
     import NavLink from "./NavLink.svelte";
 
     const router = useTinyRouter();
 
+    onMount(async () => {
+        await tick(); // necessary on Windows installation
+        // Navigate to "/" on load
+        router.navigate("/");
+    });
 </script>
 
 <NavigationMenu.Root
@@ -20,3 +26,4 @@
         <NavLink route="/about" text="About" key="about" {router} />
     </NavigationMenu.List>
 </NavigationMenu.Root>
+

@@ -2,38 +2,28 @@ import { test, expect, Locator, Page } from "@playwright/test";
 import { initialiseTest, getWindow } from "./utils";
 let electronApp;
 
-const join = (...args): string => {
-    return args.join("/");
-};
-
-const getRepoRoot = (app): string => {
-    const currentDir = app.getAppPath();
-
-    const repoRoot = join(...currentDir.split("/").slice(0, -3));
-    console.log("REPO ROOT")
-    console.log(repoRoot);
-
-    return repoRoot;
-};
-
 const initialiseFileDialogHandlers = async (): Promise<void> => {
     await electronApp.evaluate(({ app, ipcMain }) => {
-        const repoRoot = getRepoRoot(app);
+        const join = (...args): string => {
+            return args.join("/");
+        };
+        const currentDir = app.getAppPath();
+        const repoRoot = join(...currentDir.split("/").slice(0, -3));
         ipcMain.removeHandler("show-open-file-dialog");
         ipcMain.handle("show-open-file-dialog", async (_event, options) => {
-            const testDataDir = join(repoRoot, "test-data");
+            const testDataDir = join(repoRoot, "test_data");
             if (options.title === "BAM folder") {
-                return join(testDataDir, "barcodes.csv");
+                return join(testDataDir, "bams");
             }
-            if (options.title === "Model") {
-                return join(testDataDir, "models", "typhi.pkl_v8");
+            if (options.title === "Model file") {
+                return join(testDataDir, "models", "typhi_v8.pkl");
             }
             throw new Error("unknown title");
         });
         ipcMain.removeHandler("show-save-file-dialog");
         ipcMain.handle("show-save-file-dialog", async (_event, options) => {
             if (options.title === "Output report file") {
-                return join(repoRoot, "test-output", "test.html");
+                return join(repoRoot, "test_output", "test.html");
             }
         });
     });
@@ -41,6 +31,7 @@ const initialiseFileDialogHandlers = async (): Promise<void> => {
 
 test.beforeEach(async () => {
     electronApp = await initialiseTest();
+    console.log("initialised test")
     await initialiseFileDialogHandlers();
 });
 
@@ -75,7 +66,9 @@ const fillRunParameters = async (win: Page): Promise<void> => {
 };
 
 test("can see fill in run parameters form and run AmpliconTyper", async () => {
+    console.log("starting test")
     const win = await getWindow(electronApp);
+    console.log("got win")
     await fillRunParameters(win);
 
     // Check can see tooltip text
@@ -83,9 +76,9 @@ test("can see fill in run parameters form and run AmpliconTyper", async () => {
         .locator("button[data-slot='tooltip-trigger']")
         .nth(0);
     await tooltipTrigger.hover();
-    expect(
+    await expect(
         await win.locator("div[data-bits-floating-content-wrapper]"),
-    ).toHaveText(/Folder containing input BAM files/);
+    ).toHaveText(/Folder which contains either input BAM files, or an individual BAM and corresponding BAM index files/);
 
     // A wait seems to necessary here to allow updates before submitting run
     await win.waitForTimeout(2000);
@@ -93,12 +86,12 @@ test("can see fill in run parameters form and run AmpliconTyper", async () => {
     await runButton.click();
 
     // See progress spinner
-    expect(await win.getByTestId("run-progress-spinner")).toBeVisible();
+    await expect(await win.getByTestId("run-progress-spinner")).toBeVisible();
 
     // Open output buttons are not visible yet
-    expect(await getOpenReportButton(win)).toHaveCount(0);
+    await expect(await getOpenReportButton(win)).toHaveCount(0);
     const newRunButton = await getNewRunButton(win);
-    expect(newRunButton).toHaveCount(0);
+    await expect(newRunButton).toHaveCount(0);
 
     // See expected start run text in log
     const log = await win.getByTestId("logs");
