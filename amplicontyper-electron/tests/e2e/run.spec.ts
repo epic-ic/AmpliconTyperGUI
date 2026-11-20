@@ -31,7 +31,6 @@ const initialiseFileDialogHandlers = async (): Promise<void> => {
 
 test.beforeEach(async () => {
     electronApp = await initialiseTest();
-    console.log("initialised test")
     await initialiseFileDialogHandlers();
 });
 
@@ -86,9 +85,7 @@ const expectErrorMessage = async (
 };
 
 test("can see fill in run parameters form and run AmpliconTyper", async () => {
-    console.log("starting test")
     const win = await getWindow(electronApp);
-    console.log("got win")
     await fillRunParameters(win);
 
     // Check can see tooltip text

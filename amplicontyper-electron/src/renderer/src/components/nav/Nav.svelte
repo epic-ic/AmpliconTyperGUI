@@ -22,8 +22,8 @@
         </NavigationMenu.Item>
     </NavigationMenu.List>
     <NavigationMenu.List>
-        <NavLink route="/" text="Run" key="run" {router} />
-        <NavLink route="/about" text="About" key="about" {router} />
+        <NavLink route="/" data-testid="nav-run" text="Run" key="run" {router} />
+        <NavLink route="/about" data-testid="nav-about" text="About" key="about" {router} />
     </NavigationMenu.List>
 </NavigationMenu.Root>
 
