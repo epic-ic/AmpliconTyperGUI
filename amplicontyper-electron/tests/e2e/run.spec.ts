@@ -41,6 +41,9 @@ test.afterEach(async () => {
     }
 });
 
+const getFieldFromDialogButton = (buttonElement: Locator): Locator =>
+    buttonElement.locator("..");
+
 const getBAMFolderButton = async (win: Page): Promise<Locator> =>
     await win.getByLabel(/BAM folder/);
 const getModelFileButton = async (win: Page): Promise<Locator> =>
@@ -54,6 +57,9 @@ const getOpenReportButton = async (win: Page): Promise<Locator> =>
 const getNewRunButton = async (win: Page): Promise<Locator> =>
     await win.getByRole("button", { name: "New Run" });
 
+const getRunProgressSpinner = async (win: Page): Promise<Locator> =>
+    await win.getByTestId("run-progress-spinner")
+
 const fillRunParameters = async (win: Page): Promise<void> => {
     const bamFolderButton = await getBAMFolderButton(win);
     await bamFolderButton.click();
@@ -63,6 +69,20 @@ const fillRunParameters = async (win: Page): Promise<void> => {
 
     const outputReportFileButton = await getOutputReportFileButton(win);
     await outputReportFileButton.click();
+};
+
+const expectErrorMessage = async (
+    fieldElement: Locator,
+    expectError = true,
+    expectedErrorMsg = "Required value",
+): Promise<void> => {
+    // error is in <p> following field
+    const errorEl = fieldElement.locator("//following-sibling::p");
+    if (expectError) {
+        await expect(errorEl).toHaveText(expectedErrorMsg);
+    } else {
+        await expect(errorEl).not.toBeVisible();
+    }
 };
 
 test("can see fill in run parameters form and run AmpliconTyper", async () => {
@@ -86,7 +106,7 @@ test("can see fill in run parameters form and run AmpliconTyper", async () => {
     await runButton.click();
 
     // See progress spinner
-    await expect(await win.getByTestId("run-progress-spinner")).toBeVisible();
+    await expect(await getRunProgressSpinner(win)).toBeVisible();
 
     // Open output buttons are not visible yet
     await expect(await getOpenReportButton(win)).toHaveCount(0);
@@ -107,4 +127,48 @@ test("can see fill in run parameters form and run AmpliconTyper", async () => {
     await expect(await getBAMFolderButton(win)).toBeVisible();
 });
 
-// TODO: test validation errors.
+test("can see validation errors when submit run with missing values", async () => {
+    const win = await getWindow(electronApp);
+
+    const bamBtn = await getBAMFolderButton(win);
+    const bamField = await getFieldFromDialogButton(bamBtn);
+    const modelFileBtn = await getModelFileButton(win);
+    const modelFileField = await getFieldFromDialogButton(modelFileBtn);
+    const outputFileBtn = await getOutputReportFileButton(win);
+    const outputFileField = await getFieldFromDialogButton(outputFileBtn);
+
+    const runBtn = await getRunButton(win);
+
+    // Initially no errors on any field, until click Run
+    await expectErrorMessage(bamField, false);
+    await expectErrorMessage(modelFileField, false);
+    await expectErrorMessage(outputFileField, false);
+
+    // Errors appear when first submit run, and are removed when fields are filled
+    await runBtn.click();
+    await expectErrorMessage(bamField, true);
+    await expectErrorMessage(modelFileField, true);
+    await expectErrorMessage(outputFileField, true);
+
+    // fill in bam
+    await bamBtn.click();
+    await expectErrorMessage(bamField, false);
+    await expectErrorMessage(modelFileField, true);
+    await expectErrorMessage(outputFileField, true);
+
+    // fill in model
+    await modelFileBtn.click();
+    await expectErrorMessage(bamField, false);
+    await expectErrorMessage(modelFileField, false);
+    await expectErrorMessage(outputFileField, true);
+
+    // fill in output
+    await outputFileBtn.click();
+    await expectErrorMessage(bamField, false);
+    await expectErrorMessage(modelFileField, false);
+    await expectErrorMessage(outputFileField, false);
+
+    // errors all cleared, can run and see progress
+    await runBtn.click();
+    await expect(await getRunProgressSpinner(win)).toBeVisible();
+});
