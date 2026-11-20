@@ -39,3 +39,9 @@ jobs:
         run: npm ci
       - name: E2e test
         run: npm run test:e2e
+      - name: Upload e2e error snapshots
+        if: always() && hashFiles('amplicontyper-electron/test-results') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: E2e error snapshots
+          path: amplicontyper-electron/test-results
