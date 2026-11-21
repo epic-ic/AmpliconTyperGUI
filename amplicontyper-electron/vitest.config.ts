@@ -5,6 +5,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { svelteTesting } from "@testing-library/svelte/vite";
 
 export default defineConfig({
+  clearMocks: true,
   plugins: [tailwindcss()],
   test: {
     coverage: {

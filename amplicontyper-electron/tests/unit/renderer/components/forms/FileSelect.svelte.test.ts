@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, vi } from "vitest";
+import { describe, expect, test, beforeAll, beforeEach, vi } from "vitest";
 import { screen, render } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import FileSelect from "../../../../../src/renderer/src/components/forms/FileSelect.svelte";
@@ -10,6 +10,8 @@ const expectChooseFolder = async (): Promise<void> => {
 const expectChooseFile = async (): Promise<void> => {
   expect(screen.getByText("Choose file")).toBeVisible();
 };
+
+const mockOnChange = vi.fn();
 
 describe("FileSelect", () => {
   let user;
@@ -44,7 +46,6 @@ describe("FileSelect", () => {
   });
 
   test("shows open file dialog, updates values and calls onchange", async () => {
-    const mockOnChange = vi.fn();
     const mockShowOpenFileDialog = vi.fn().mockImplementation(() => "/selected/report.html");
     window.api = {
       showOpenFileDialog: mockShowOpenFileDialog
@@ -69,12 +70,11 @@ describe("FileSelect", () => {
       defaultPath: "/default/report.html"
     });
 
-    expect(mockOnChange).toHaveBeenCalled();
+    expect(mockOnChange).toHaveBeenCalledOnce();
     expect(screen.getByText("/selected/report.html")).toBeVisible();
   });
 
   test("shows save file dialog, updates values and calls onchange", async () => {
-    const mockOnChange = vi.fn();
     const mockShowSaveFileDialog = vi.fn().mockImplementation(() => "/selected/newReport.html");
     window.api = {
       showSaveFileDialog: mockShowSaveFileDialog
@@ -98,12 +98,11 @@ describe("FileSelect", () => {
       defaultPath: "/default/report.html"
     });
 
-    expect(mockOnChange).toHaveBeenCalled();
+    expect(mockOnChange).toHaveBeenCalledOnce();
     expect(screen.getByText("/selected/newReport.html")).toBeVisible();
   });
 
   test("does no update if dialog is cancelled", async () => {
-    const mockOnChange = vi.fn();
     const mockShowOpenFileDialog = vi.fn().mockImplementation(() => null);
     window.api = {
       showOpenFileDialog: mockShowOpenFileDialog
