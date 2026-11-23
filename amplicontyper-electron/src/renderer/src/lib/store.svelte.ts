@@ -5,7 +5,7 @@ export const appState: AppState = $state({
   doneInitialSubmit: false
 });
 
-const defaultRunParameters = (): AmpliconTyperRunParameters => ({
+export const defaultRunParameters = (): AmpliconTyperRunParameters => ({
   bamDir: "",
   modelFile: "",
   outputReportFile: ""

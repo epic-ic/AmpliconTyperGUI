@@ -50,16 +50,24 @@
 <div class="space-y-2">
   <div class="bg-white mt-2 p-4 border {borderColour}">
     <div class="flex">
-      <div>
         {#if ampliconTyperAPI.running}
-          <Spinner class="text-orange-300" data-testid="run-progress-spinner"></Spinner>
+          <div>
+            <Spinner class="text-orange-300" data-testid="run-progress-spinner"></Spinner>
+          </div>
+          <div class="pl-2">Running classify for:</div>
         {:else if ampliconTyperAPI.error}
+          <div>
           <X class="text-red-600" data-testid="run-progress-x"></X>
+          </div>
+          <div class="text-red-600 text-sm">
+            {ampliconTyperAPI.error.message}: {ampliconTyperAPI.error.detail}
+          </div>
         {:else if ampliconTyperAPI.success}
+          <div>
           <Check class="text-green-600" data-testid="run-progress-check"></Check>
+          </div>
+          <div class="pl-2">Run complete</div>
         {/if}
-      </div>
-      <div class="pl-2">Running classify for:</div>
     </div>
     <div class="h-[2rem] flex items-center">
       BAM folder:

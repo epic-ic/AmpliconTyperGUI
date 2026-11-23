@@ -68,6 +68,7 @@ export class AmpliconTyperAPI {
     }
     this.#log = [];
     this.#running = true;
+    //this.#error = {message: "Ampli Error", detail: "oh no"};
     await window.api.runAmpliconTyper({ parameters: { ...parameters }, settings: {} });
   }
 
