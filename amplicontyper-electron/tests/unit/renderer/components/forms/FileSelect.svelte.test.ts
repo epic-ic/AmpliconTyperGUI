@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import FileSelect from "../../../../../src/renderer/src/components/forms/FileSelect.svelte";
 
 const expectChooseFolder = async (): Promise<void> => {
- expect(screen.getByText("Choose folder")).toBeVisible();
+  expect(screen.getByText("Choose folder")).toBeVisible();
 };
 
 const expectChooseFile = async (): Promise<void> => {

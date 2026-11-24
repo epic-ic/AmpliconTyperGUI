@@ -1,168 +1,151 @@
 import { describe, expect, test, afterEach, beforeAll, vi } from "vitest";
-import { expectTranslations, renderInI18nTestContext } from "../../utils";
 import { screen, within, render } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import RunProgress from "../../../../../src/renderer/src/components/run/RunProgress.svelte";
 import { runParameters } from "$lib/store.svelte";
-import { mockAmpliconTyperAPI} from "../../../MockAmpliconTyperAPI.svelte";
+import { mockAmpliconTyperAPI } from "../../../MockAmpliconTyperAPI.svelte";
+import {ampliconTyperAPI} from "../../../../../src/renderer/src/lib/ampliconTyperAPI.svelte";
 
 describe("RunProgress", () => {
-    const user = userEvent.setup();
+  const user = userEvent.setup();
 
+  beforeAll(async () => {
+    runParameters.bamDir = "/test/bams";
+    runParameters.modelFile = "/test/model.pkl";
+    runParameters.outputReportFile = "/test/output.html";
+  });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
-    const testNewRunClearsLog = async (piranhaAPI): Promise<void> => {
-        renderInI18nTestContext(RunProgress);
-        await expectTranslations(
-            (text) => {
-                expect(screen.getByTestId("new-run")).toHaveTextContent(text);
-            },
-            {
-                en: "New Run",
-                fr: "Nouvelle analyse",
-                pt: "Nova corrida",
-            },
-        );
-        const button = screen.getByTestId("new-run");
-        await user.click(button);
-        expect(piranhaAPI.clearRun).toHaveBeenCalled();
-    };
+  test("renders as expected when running", async () => {
+    await mockAmpliconTyperAPI({
+      log: ["log entry 1 ", "log entry 2"],
+      running: true
+    });
+    render(RunProgress);
 
+    expect(screen.getByTestId("run-progress")).toHaveTextContent("Run Progress");
+    expect(screen.getByTestId("running-for")).toHaveTextContent("Running classify for:");
 
-        beforeAll(async () => {
-            runParameters.bamDir = "/test/bams";
-            runParameters.modelFile = "/test/model.pkl";
-            runParameters.outputReportFile = "/test/output.html";
-        });
+    const bamDirDiv = screen.getByText(/BAM folder:/);
+    expect(within(bamDirDiv).getByText(/\/test\/bams/)).toBeVisible();
 
-        afterEach(() => {
-            vi.useRealTimers();
-        });
+    const modelDiv = screen.getByText(/Model:/);
+    expect(within(modelDiv).getByText(/\/test\/model.pkl/)).toBeVisible();
 
-        test("renders as expected", async () => {
-            await mockAmpliconTyperAPI({
-                log: ["log entry 1 ", "log entry 2"],
-                running: true,
-            });
-            render(RunProgress);
+    const outputReportDiv = screen.getByText(/Output report file:/);
+    expect(within(outputReportDiv).getByText(/\/test\/output.html/)).toBeVisible();
 
-            expect(screen.getByTestId("run-progress")).toHaveTextContent("Run Progress");
+    expect(screen.getByTestId("logs")).toHaveTextContent(/log entry 1 log entry 2/);
 
-            const bamDirDiv = screen.getByText("BAM folder");
-            expect(
-                within(bamDirDiv).getByText(/\/test\/bams/),
-            ).toBeVisible();
+    expect(screen.getByTestId("run-progress-spinner")).toBeVisible();
+    expect(screen.queryByTestId("run-progress-x")).toBeNull();
+    expect(screen.queryByTestId("run-progress-check")).toBeNull();
+    expect(screen.queryByTestId("run-error")).toBeNull();
+    expect(screen.queryByTestId("run-complete")).toBeNull();
 
-            const modelDiv = screen.getByText("Model");
-            expect(
-                within(modelDiv).getByText(/\/test\/model.pkl/),
-            ).toBeVisible();
+    expect(screen.queryByTestId("open-report")).toBeNull();
+    expect(screen.queryByTestId("new-run")).toBeNull();
+  });
 
-            const outputReportDiv = screen.getByText("Output report file");
-            expect(
-                within(outputReportDiv).getByText(/\/test\/output.html/),
-            ).toBeVisible();
+  test("overridden log message is hidden", async () => {
+      await mockAmpliconTyperAPI({
+          log: [
+              "log entry 1 ",
+              "log entry 2 v1 ",
+              "\rlog entry 2 v2 ",
+              "log entry 3"
+          ],
+          running: true
+      });
+      render(RunProgress);
+      expect(screen.getByTestId("logs")).toHaveTextContent(/log entry 1 log entry 2 v2 log entry 3/);
 
-            expect(screen.getByTestId("logs")).toHaveTextContent(
-                /log entry 1 log entry 2/,
-            );
+  });
 
-            expect(screen.getByTestId("run-progress-spinner")).toBeVisible();
-            expect(screen.queryByTestId("run-progress-x")).toBeNull();
-            expect(screen.queryByTestId("run-progress-check")).toBeNull();
+  test("see Check and Open Report and New Run buttons when running is complete with no error", async () => {
+    await mockAmpliconTyperAPI({
+      log: ["log entry 1 ", "log entry 2"],
+      running: false,
+      success: true
+    });
+    render(RunProgress);
+    expect(screen.getByTestId("run-progress-check")).toBeVisible();
+    expect(screen.queryByTestId("run-progress-x")).toBeNull();
+    expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
+    expect(screen.getByTestId("run-complete")).toHaveTextContent("Run complete");
+    expect(screen.queryByTestId("run-error")).toBeNull();
+    expect(screen.queryByTestId("running-for")).toBeNull();
+    expect(screen.getByTestId("open-report")).toHaveTextContent("Open report");
+    expect(screen.getByTestId("new-run")).toHaveTextContent("New Run");
+  });
 
+  test("Open report button calls expected method on piranha API", async () => {
+    const mockAPI = await mockAmpliconTyperAPI({
+      running: false,
+      success: true
+    });
+    render(RunProgress);
 
-            expect(screen.queryByTestId("open-report")).toBeNull();
-            expect(screen.queryByTestId("new-run")).toBeNull();
-        });
+    const button = screen.getByTestId("open-report");
+    await user.click(button);
+    expect(mockAPI.openRunReport).toHaveBeenCalledWith("/test/output.html");
+  });
 
-        test("see Check and Open Report and New Run buttons when running is complete with no error",  async () => {
-            await mockAmpliconTyperAPI({
-                log: ["log entry 1 ", "log entry 2"],
-                running: false,
-                success: true,
-            });
-            render(RunProgress);
-            expect(screen.getByTestId("run-progress-check")).toBeVisible();
-            expect(screen.queryByTestId("run-progress-x")).toBeNull();
-            expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
-            expect(screen.getByTestId("open-report")).toHaveTextContent("Open report");
-            expect(screen.getByTestId("new-run")).toHaveTextContent("New Run");
-        });
+  test("see x and error message when running is complete with error", async () => {
+    await mockAmpliconTyperAPI({
+      log: ["log entry 1 ", "log entry 2"],
+      running: false,
+      success: false,
+      error: { message: "AmpliconTyper failed", detail: "oh no" }
+    });
+    render(RunProgress);
+    expect(screen.getByTestId("run-progress-x")).toBeVisible();
+    expect(screen.getByTestId("run-error")).toHaveTextContent("Run error. AmpliconTyper failed: oh no");
+    expect(screen.queryByTestId("run-progress-check")).toBeNull();
+    expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
+    expect(screen.queryByTestId("running-for")).toBeNull();
+    expect(screen.queryByTestId("run-complete")).toBeNull();
+    expect(screen.queryByTestId("open-report")).toBeNull();
+    expect(screen.getByTestId("new-run")).toHaveTextContent("New Run");
+  });
 
-        test("Open report button calls expected method on piranha API", async () => {
-            const mockAPI = await mockAmpliconTyperAPI({
-                running: false,
-                success: true,
-            });
-            render(RunProgress);
+  test("new run clears log", async () => {
+    const api = await mockAmpliconTyperAPI({
+      success: true,
+      log: ["log entry 1 ", "log entry 2"],
+      running: false
+    });
 
-            const button = screen.getByTestId("open-report");
-            await user.click(button);
-            expect(mockAPI.openRunReport).toHaveBeenCalledWith("/test/output.html");
-        });
+    render(RunProgress);
+    const button = screen.getByTestId("new-run");
+    await user.click(button);
+    expect(api.clearRun).toHaveBeenCalled();
+  });
 
-        // TODO: actually show error on component, and test for it here!
-        test("see x when running is complete with error", async () => {
-            await mockPiranhaAPI({
-                initialized: true,
-                log: ["log entry 1 ", "log entry 2"],
-                running: false,
-                error: { messageKey: "runError", detail: "oh no" },
-            });
-            renderInI18nTestContext(RunProgress);
-            expect(screen.getByTestId("run-progress-x")).toBeVisible();
-            await expectTranslations(
-                (text) => {
-                    expect(screen.getByText(text)).toBeVisible();
-                },
-                {
-                    en: /Piranha Run Error: oh no/,
-                    fr: /Erreur d'exécution Piranha: oh no/,
-                    pt: /Erro ao Executar o Piranha: oh no/,
-                },
-            );
-            expect(screen.queryByTestId("run-progress-check")).toBeNull();
-            expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
-            expect(screen.queryByTestId("open-report")).toBeNull();
-            expect(screen.queryByTestId("open-output-folder")).toBeNull();
-        });
+  test("updating log triggers scroll to end", async () => {
+    // Use fake timers only in this test where we need them, as otherwise they cause userEvent to hang
+    vi.useFakeTimers();
 
-        test("new run clears log", async () => {
-            const piranhaAPI = await mockPiranhaAPI({
-                initialized: true,
-                log: ["log entry 1 ", "log entry 2"],
-                running: false,
-            });
-            await testNewRunClearsLog(piranhaAPI);
-        });
+    const api = await mockAmpliconTyperAPI({
+      success: true,
+      log: ["log entry 1 ", "log entry 2"],
+      running: false
+    });
 
-        test("updating log triggers scroll to end", async () => {
-            // Use fake timers only in this test where we need them, as otherwise they cause userEvent to hang
-            vi.useFakeTimers();
+    const { container } = render(RunProgress);
+    const logEl = container.querySelector("code[data-testid='logs']");
+    const scrollHeightSpy = vi.spyOn(logEl, "scrollHeight", "get").mockImplementation(() => 500);
+    let scrollTopToUpdate = 0;
+    vi.spyOn(logEl, "scrollTop", "set").mockImplementation((value) => (scrollTopToUpdate = value));
 
-            const piranhaAPI = await mockPiranhaAPI({
-                initialized: true,
-                log: ["log entry 1 ", "log entry 2"],
-                running: false,
-            });
+    api.log.push("more", "log", "content");
 
-            const { container } = render(RunProgress);
-            const logEl = container.querySelector("code[data-testid='logs']");
-            const scrollHeightSpy = vi
-                .spyOn(logEl, "scrollHeight", "get")
-                .mockImplementation(() => 500);
-            let scrollTopToUpdate = 0;
-            vi.spyOn(logEl, "scrollTop", "set").mockImplementation(
-                (value) => (scrollTopToUpdate = value),
-            );
-
-            piranhaAPI.log.push(["more", "log", "content"]);
-
-            // Wait for debounce to trigger update
-            await vi.advanceTimersByTimeAsync(300);
-            expect(scrollHeightSpy).toHaveBeenCalled();
-            expect(scrollTopToUpdate).toBe(500);
-        });
-
+    // Wait for debounce to trigger update
+    await vi.advanceTimersByTimeAsync(300);
+    expect(scrollHeightSpy).toHaveBeenCalled();
+    expect(scrollTopToUpdate).toBe(500);
+  });
 });

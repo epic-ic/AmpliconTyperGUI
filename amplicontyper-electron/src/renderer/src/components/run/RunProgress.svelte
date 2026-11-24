@@ -36,9 +36,8 @@
     // lines showing each stage of the progress bar). Replicate this here,
     // by omitting any log entries which are followed by an entry starting with /r
     return (
-      logEntryIndex >= ampliconTyperAPI.log.length - 1 ||
-      !ampliconTyperAPI.log[logEntryIndex + 1].startsWith("\r")
-    );
+      logEntryIndex >= ampliconTyperAPI.log.length - 1 ) ||
+            (!ampliconTyperAPI.log[logEntryIndex + 1].startsWith("\r"));
   };
 
   const clearRun = (): void => {
@@ -50,24 +49,24 @@
 <div class="space-y-2">
   <div class="bg-white mt-2 p-4 border {borderColour}">
     <div class="flex">
-        {#if ampliconTyperAPI.running}
-          <div>
-            <Spinner class="text-orange-300" data-testid="run-progress-spinner"></Spinner>
-          </div>
-          <div class="pl-2">Running classify for:</div>
-        {:else if ampliconTyperAPI.error}
-          <div>
+      {#if ampliconTyperAPI.running}
+        <div>
+          <Spinner class="text-orange-300" data-testid="run-progress-spinner"></Spinner>
+        </div>
+        <div class="pl-2" data-testid="running-for">Running classify for:</div>
+      {:else if ampliconTyperAPI.error}
+        <div>
           <X class="text-red-600" data-testid="run-progress-x"></X>
-          </div>
-          <div class="text-red-600 text-sm">
-            {ampliconTyperAPI.error.message}: {ampliconTyperAPI.error.detail}
-          </div>
-        {:else if ampliconTyperAPI.success}
-          <div>
+        </div>
+        <div class="text-red-600" data-testid="run-error">
+          Run error. {ampliconTyperAPI.error.message}: {ampliconTyperAPI.error.detail}
+        </div>
+      {:else if ampliconTyperAPI.success}
+        <div>
           <Check class="text-green-600" data-testid="run-progress-check"></Check>
-          </div>
-          <div class="pl-2">Run complete</div>
-        {/if}
+        </div>
+        <div class="pl-2" data-testid="run-complete">Run complete</div>
+      {/if}
     </div>
     <div class="h-[2rem] flex items-center">
       BAM folder:
