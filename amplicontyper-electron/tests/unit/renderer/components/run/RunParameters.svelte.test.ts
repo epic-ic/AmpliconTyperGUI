@@ -43,7 +43,7 @@ describe("RunParameters", () => {
     });
 
     const mockShowSaveFileDialog = vi.fn().mockImplementation((options) => {
-      if (options.title == "Output report file") {
+      if (options.title == "Output report file name") {
         return "/test/output.html";
       }
     });
@@ -61,7 +61,7 @@ describe("RunParameters", () => {
 
     expect(screen.getByLabelText("BAM folder")).toHaveAttribute("id", "bam-dir-field");
     expect(screen.getByLabelText("Model file")).toHaveAttribute("id", "model-field");
-    expect(screen.getByLabelText("Output report file")).toHaveAttribute(
+    expect(screen.getByLabelText("Output report file name")).toHaveAttribute(
       "id",
       "output-report-file-field"
     );
@@ -92,7 +92,7 @@ describe("RunParameters", () => {
     });
     await user.click(screen.getByLabelText("BAM folder"));
     await user.click(screen.getByLabelText("Model file"));
-    await user.click(screen.getByLabelText("Output report file"));
+    await user.click(screen.getByLabelText("Output report file name"));
     await user.click(screen.getByTestId("run"));
     expect(mockAPI.runAmpliconTyper).toHaveBeenCalledOnce();
     expect(mockAPI.runAmpliconTyper).toHaveBeenCalledWith({
