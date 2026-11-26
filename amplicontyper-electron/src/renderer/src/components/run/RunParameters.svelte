@@ -17,7 +17,7 @@
       help: "Pickle (.pkl) file containing pre-trained model. Model must be trained on same reference."
     },
     outputReportFile: {
-      label: "Output report file",
+      label: "Output report file name",
       help: "Path of output HTML file to store classification results."
     }
   };
