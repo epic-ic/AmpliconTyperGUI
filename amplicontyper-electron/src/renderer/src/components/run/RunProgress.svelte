@@ -36,8 +36,9 @@
     // lines showing each stage of the progress bar). Replicate this here,
     // by omitting any log entries which are followed by an entry starting with /r
     return (
-      logEntryIndex >= ampliconTyperAPI.log.length - 1 ) ||
-            (!ampliconTyperAPI.log[logEntryIndex + 1].startsWith("\r"));
+      logEntryIndex >= ampliconTyperAPI.log.length - 1 ||
+      !ampliconTyperAPI.log[logEntryIndex + 1].startsWith("\r")
+    );
   };
 
   const clearRun = (): void => {

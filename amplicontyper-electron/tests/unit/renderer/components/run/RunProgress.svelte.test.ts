@@ -50,18 +50,12 @@ describe("RunProgress", () => {
   });
 
   test("overridden log message is hidden", async () => {
-      await mockAmpliconTyperAPI({
-          log: [
-              "log entry 1 ",
-              "log entry 2 v1 ",
-              "\rlog entry 2 v2 ",
-              "log entry 3"
-          ],
-          running: true
-      });
-      render(RunProgress);
-      expect(screen.getByTestId("logs")).toHaveTextContent(/log entry 1 log entry 2 v2 log entry 3/);
-
+    await mockAmpliconTyperAPI({
+      log: ["log entry 1 ", "log entry 2 v1 ", "\rlog entry 2 v2 ", "log entry 3"],
+      running: true
+    });
+    render(RunProgress);
+    expect(screen.getByTestId("logs")).toHaveTextContent(/log entry 1 log entry 2 v2 log entry 3/);
   });
 
   test("see Check and Open Report and New Run buttons when running is complete with no error", async () => {
@@ -102,7 +96,9 @@ describe("RunProgress", () => {
     });
     render(RunProgress);
     expect(screen.getByTestId("run-progress-x")).toBeVisible();
-    expect(screen.getByTestId("run-error")).toHaveTextContent("Run error. AmpliconTyper failed: oh no");
+    expect(screen.getByTestId("run-error")).toHaveTextContent(
+      "Run error. AmpliconTyper failed: oh no"
+    );
     expect(screen.queryByTestId("run-progress-check")).toBeNull();
     expect(screen.queryByTestId("run-progress-spinner")).toBeNull();
     expect(screen.queryByTestId("running-for")).toBeNull();
