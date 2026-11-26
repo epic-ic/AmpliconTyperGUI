@@ -56,5 +56,5 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           fail_ci_if_error: true
-          files: ./coverage/coverage-final.json
-          token: ${{ secrets.CODECOV_TOKEN }} # required
+          files: ./amplicontyper-electron/coverage/coverage-final.json
+          token: ${{ secrets.CODECOV_TOKEN }}

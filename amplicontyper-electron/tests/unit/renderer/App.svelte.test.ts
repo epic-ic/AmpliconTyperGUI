@@ -6,7 +6,7 @@ import {mockAmpliconTyperAPI} from "../MockAmpliconTyperAPI.svelte";
 
 describe("App", () => {
 
-  const expectRunPage = async () => {
+  const expectRunPage = async (): Promise<void> => {
       expect(screen.getByText("New Run")).toBeVisible();
   };
 

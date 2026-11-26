@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeAll } from "vitest";
+import { describe, expect, test } from "vitest";
 import RunRelatedComponentInTestContext from "./RunRelatedComponentInTestContext.svelte";
 import { screen, render } from "@testing-library/svelte";
 import { mockAmpliconTyperAPI } from "../../../MockAmpliconTyperAPI.svelte";

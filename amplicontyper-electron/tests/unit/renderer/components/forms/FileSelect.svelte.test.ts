@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeAll, beforeEach, vi } from "vitest";
+import { describe, expect, test, beforeEach, vi } from "vitest";
 import { screen, render } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import FileSelect from "../../../../../src/renderer/src/components/forms/FileSelect.svelte";

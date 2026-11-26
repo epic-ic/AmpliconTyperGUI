@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import RunProgress from "../../../../../src/renderer/src/components/run/RunProgress.svelte";
 import { runParameters } from "$lib/store.svelte";
 import { mockAmpliconTyperAPI } from "../../../MockAmpliconTyperAPI.svelte";
-import {ampliconTyperAPI} from "../../../../../src/renderer/src/lib/ampliconTyperAPI.svelte";
 
 describe("RunProgress", () => {
   const user = userEvent.setup();
