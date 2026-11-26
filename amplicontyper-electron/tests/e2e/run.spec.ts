@@ -2,38 +2,28 @@ import { test, expect, Locator, Page } from "@playwright/test";
 import { initialiseTest, getWindow } from "./utils";
 let electronApp;
 
-const join = (...args): string => {
-  return args.join("/");
-};
-
-const getRepoRoot = (app): string => {
-  const currentDir = app.getAppPath();
-
-  const repoRoot = join(...currentDir.split("/").slice(0, -3));
-  console.log("REPO ROOT");
-  console.log(repoRoot);
-
-  return repoRoot;
-};
-
 const initialiseFileDialogHandlers = async (): Promise<void> => {
   await electronApp.evaluate(({ app, ipcMain }) => {
-    const repoRoot = getRepoRoot(app);
+    const join = (...args): string => {
+      return args.join("/");
+    };
+    const currentDir = app.getAppPath();
+    const repoRoot = join(...currentDir.split("/").slice(0, -3));
     ipcMain.removeHandler("show-open-file-dialog");
     ipcMain.handle("show-open-file-dialog", async (_event, options) => {
-      const testDataDir = join(repoRoot, "test-data");
+      const testDataDir = join(repoRoot, "test_data");
       if (options.title === "BAM folder") {
-        return join(testDataDir, "barcodes.csv");
+        return join(testDataDir, "bams");
       }
-      if (options.title === "Model") {
-        return join(testDataDir, "models", "typhi.pkl_v8");
+      if (options.title === "Model file") {
+        return join(testDataDir, "models", "typhi_v8.pkl");
       }
       throw new Error("unknown title");
     });
     ipcMain.removeHandler("show-save-file-dialog");
     ipcMain.handle("show-save-file-dialog", async (_event, options) => {
-      if (options.title === "Output report file") {
-        return join(repoRoot, "test-output", "test.html");
+      if (options.title === "Output report file name") {
+        return join(repoRoot, "test_output", "test.html");
       }
     });
   });
@@ -50,6 +40,8 @@ test.afterEach(async () => {
   }
 });
 
+const getFieldFromDialogButton = (buttonElement: Locator): Locator => buttonElement.locator("..");
+
 const getBAMFolderButton = async (win: Page): Promise<Locator> =>
   await win.getByLabel(/BAM folder/);
 const getModelFileButton = async (win: Page): Promise<Locator> =>
@@ -62,6 +54,8 @@ const getOpenReportButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Open report/ });
 const getNewRunButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: "New Run" });
+const getRunProgressSpinner = async (win: Page): Promise<Locator> =>
+  await win.getByTestId("run-progress-spinner");
 
 const fillRunParameters = async (win: Page): Promise<void> => {
   const bamFolderButton = await getBAMFolderButton(win);
@@ -74,6 +68,20 @@ const fillRunParameters = async (win: Page): Promise<void> => {
   await outputReportFileButton.click();
 };
 
+const expectErrorMessage = async (
+  fieldElement: Locator,
+  expectError = true,
+  expectedErrorMsg = "Required value"
+): Promise<void> => {
+  // error is in <p> following field
+  const errorEl = fieldElement.locator("//following-sibling::p");
+  if (expectError) {
+    await expect(errorEl).toHaveText(expectedErrorMsg);
+  } else {
+    await expect(errorEl).not.toBeVisible();
+  }
+};
+
 test("can see fill in run parameters form and run AmpliconTyper", async () => {
   const win = await getWindow(electronApp);
   await fillRunParameters(win);
@@ -81,8 +89,8 @@ test("can see fill in run parameters form and run AmpliconTyper", async () => {
   // Check can see tooltip text
   const tooltipTrigger = await win.locator("button[data-slot='tooltip-trigger']").nth(0);
   await tooltipTrigger.hover();
-  expect(await win.locator("div[data-bits-floating-content-wrapper]")).toHaveText(
-    /Folder containing input BAM files/
+  await expect(await win.locator("div[data-bits-floating-content-wrapper]")).toHaveText(
+    /Folder which contains either input BAM files, or an individual BAM and corresponding BAM index files/
   );
 
   // A wait seems to necessary here to allow updates before submitting run
@@ -91,12 +99,12 @@ test("can see fill in run parameters form and run AmpliconTyper", async () => {
   await runButton.click();
 
   // See progress spinner
-  expect(await win.getByTestId("run-progress-spinner")).toBeVisible();
+  await expect(await getRunProgressSpinner(win)).toBeVisible();
 
   // Open output buttons are not visible yet
-  expect(await getOpenReportButton(win)).toHaveCount(0);
+  await expect(await getOpenReportButton(win)).toHaveCount(0);
   const newRunButton = await getNewRunButton(win);
-  expect(newRunButton).toHaveCount(0);
+  await expect(newRunButton).toHaveCount(0);
 
   // See expected start run text in log
   const log = await win.getByTestId("logs");
@@ -112,4 +120,48 @@ test("can see fill in run parameters form and run AmpliconTyper", async () => {
   await expect(await getBAMFolderButton(win)).toBeVisible();
 });
 
-// TODO: test validation errors.
+test("can see validation errors when submit run with missing values", async () => {
+  const win = await getWindow(electronApp);
+
+  const bamBtn = await getBAMFolderButton(win);
+  const bamField = await getFieldFromDialogButton(bamBtn);
+  const modelFileBtn = await getModelFileButton(win);
+  const modelFileField = await getFieldFromDialogButton(modelFileBtn);
+  const outputFileBtn = await getOutputReportFileButton(win);
+  const outputFileField = await getFieldFromDialogButton(outputFileBtn);
+
+  const runBtn = await getRunButton(win);
+
+  // Initially no errors on any field, until click Run
+  await expectErrorMessage(bamField, false);
+  await expectErrorMessage(modelFileField, false);
+  await expectErrorMessage(outputFileField, false);
+
+  // Errors appear when first submit run, and are removed when fields are filled
+  await runBtn.click();
+  await expectErrorMessage(bamField, true);
+  await expectErrorMessage(modelFileField, true);
+  await expectErrorMessage(outputFileField, true);
+
+  // fill in bam
+  await bamBtn.click();
+  await expectErrorMessage(bamField, false);
+  await expectErrorMessage(modelFileField, true);
+  await expectErrorMessage(outputFileField, true);
+
+  // fill in model
+  await modelFileBtn.click();
+  await expectErrorMessage(bamField, false);
+  await expectErrorMessage(modelFileField, false);
+  await expectErrorMessage(outputFileField, true);
+
+  // fill in output
+  await outputFileBtn.click();
+  await expectErrorMessage(bamField, false);
+  await expectErrorMessage(modelFileField, false);
+  await expectErrorMessage(outputFileField, false);
+
+  // errors all cleared, can run and see progress
+  await runBtn.click();
+  await expect(await getRunProgressSpinner(win)).toBeVisible();
+});

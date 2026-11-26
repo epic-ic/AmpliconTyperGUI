@@ -1,11 +1,17 @@
 import { _electron as electron, ElectronApplication, Page } from "@playwright/test";
+import pkg from "../../package.json" with { type: "json" };
+
+export const ampliconTyperGUIVersion = (): string => pkg.version;
 
 // Point Playwright at the built main scripts, not the src ts file. Do not use sandbox - this causes
 // permission-related failures on CI.
 export const launchApp = async (): Promise<ElectronApplication> => {
-  console.log("launching");
-  const app = await electron.launch({ args: ["out/main/index.js", "--no-sandbox"] });
-  console.log("launched");
+  const app = await electron.launch({
+    args: ["out/main/index.js", "--no-sandbox", "--disable-gpu"],
+    env: {
+      ...process.env
+    }
+  });
   return app;
 };
 

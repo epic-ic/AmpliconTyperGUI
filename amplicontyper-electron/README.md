@@ -64,4 +64,6 @@ sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
 
 ## Tests
 
-TODO
+Run e2e tests with `npm run test:e2e`
+
+Unit tests: TODO
