@@ -22,7 +22,7 @@ const initialiseFileDialogHandlers = async (): Promise<void> => {
     });
     ipcMain.removeHandler("show-save-file-dialog");
     ipcMain.handle("show-save-file-dialog", async (_event, options) => {
-      if (options.title === "Output report file") {
+      if (options.title === "Output report file name") {
         return join(repoRoot, "test_output", "test.html");
       }
     });
@@ -54,7 +54,6 @@ const getOpenReportButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: /Open report/ });
 const getNewRunButton = async (win: Page): Promise<Locator> =>
   await win.getByRole("button", { name: "New Run" });
-
 const getRunProgressSpinner = async (win: Page): Promise<Locator> =>
   await win.getByTestId("run-progress-spinner");
 

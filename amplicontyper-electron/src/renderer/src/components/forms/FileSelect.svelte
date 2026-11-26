@@ -40,7 +40,7 @@
 
 <div id={`${id}-container`} class="flex">
   <Button {id} class="rounded-r-none border-0" onclick={showDialog}
-    >{selectFolder ? "Choose folder" : "Choose file"}</Button
+    >{selectFolder ? "Choose folder" : save ? "Choose file name" : "Choose file"}</Button
   >
   <div
     data-testid={`${id}-value`}
