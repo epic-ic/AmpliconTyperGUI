@@ -2,7 +2,6 @@ import { test, expect, Locator, Page } from "@playwright/test";
 import { initialiseTest, getWindow } from "./utils";
 let electronApp;
 
-<<<<<<< HEAD
 const initialiseFileDialogHandlers = async (): Promise<void> => {
   await electronApp.evaluate(({ app, ipcMain }) => {
     const join = (...args): string => {
@@ -18,32 +17,6 @@ const initialiseFileDialogHandlers = async (): Promise<void> => {
       }
       if (options.title === "Model file") {
         return join(testDataDir, "models", "typhi_v8.pkl");
-=======
-const join = (...args): string => {
-  return args.join("/");
-};
-
-const getRepoRoot = (app): string => {
-  const currentDir = app.getAppPath();
-
-  const repoRoot = join(...currentDir.split("/").slice(0, -3));
-  console.log("REPO ROOT");
-  console.log(repoRoot);
-
-  return repoRoot;
-};
-
-const initialiseFileDialogHandlers = async (): Promise<void> => {
-  await electronApp.evaluate(({ app, ipcMain }) => {
-    const repoRoot = getRepoRoot(app);
-    ipcMain.removeHandler("show-open-file-dialog");
-    ipcMain.handle("show-open-file-dialog", async (_event, options) => {
-      const testDataDir = join(repoRoot, "test-data");
-      if (options.title === "BAM folder") {
-        return join(testDataDir, "barcodes.csv");
-      }
-      if (options.title === "Model") {
-        return join(testDataDir, "models", "typhi.pkl_v8");
       }
       throw new Error("unknown title");
     });
@@ -93,7 +66,6 @@ const fillRunParameters = async (win: Page): Promise<void> => {
 
   const outputReportFileButton = await getOutputReportFileButton(win);
   await outputReportFileButton.click();
-
 };
 
 const expectErrorMessage = async (
